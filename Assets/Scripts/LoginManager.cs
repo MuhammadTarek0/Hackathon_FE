@@ -7,16 +7,21 @@
 
     public class LoginManager : MonoBehaviour
     {
-
+        [Header("Game Events")]
+        [SerializeField] private GameEvent showLoadingGameEvent;
+        [SerializeField] private GameEvent hideLoadingGameEvent;
+        [Header("References")]
         [SerializeField] private TMP_InputField usernameField;
         [SerializeField] private TMP_InputField passwordField;
-
+        [Header("API")]
         [SerializeField] private string apiUrl;
 
         private Coroutine loginCoroutine;
 
         public void Login()
         {
+            if (loginCoroutine is not null) return;
+            
             loginCoroutine = StartCoroutine(TryLogin());
         }
 
@@ -39,8 +44,10 @@
             // Set content type to application/json
             www.SetRequestHeader("Content-Type", "application/json");
 
+            showLoadingGameEvent.Raise();
             // Send request
             yield return www.SendWebRequest();
+            hideLoadingGameEvent.Raise();
 
             // Handle response
             if (www.result == UnityWebRequest.Result.Success)
@@ -51,12 +58,7 @@
             {
                 Debug.LogError($"Error: {www.error}");
             }
-        }
-        // Helper class for JSON payload
-        [System.Serializable]
-        private class LoginData
-        {
-            public string username;
-            public string password;
+
+            loginCoroutine = null;
         }
     }
