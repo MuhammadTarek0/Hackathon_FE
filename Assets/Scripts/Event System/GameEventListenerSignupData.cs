@@ -2,7 +2,7 @@
 public class GameEventListenerSignupData : GameEventListenerT<SignupData>
 {
     [SerializeField]
-    private GameEventT<SignupData> gameEvent;
+    private GameEventSignupData gameEvent;
 
     [SerializeField]
     protected UnityEvent onGameEventRaised;
@@ -22,6 +22,7 @@ public class GameEventListenerSignupData : GameEventListenerT<SignupData>
 
     public override void OnGameEventRaised(SignupData value)
     {
+        // Check for error in login data
         if (string.IsNullOrEmpty(value.username) || string.IsNullOrEmpty(value.email))
         {
             Debug.LogError("Invalid signup data received.");
@@ -31,10 +32,10 @@ public class GameEventListenerSignupData : GameEventListenerT<SignupData>
         // Call base method to ensure listeners are updated
         base.OnGameEventRaised(value);
 
-        // Create welcome message text
-        usernameText.text = $"Welcome, {value.username}!";
+        // Send message to console
+        Debug.Log($"Signup data received: {value.username}, {value.email}");
 
-        // Send the signup data to the backend API
+        // Additional logic, such as sending data to the backend
         SendSignupDataToBackend(value);
     }
 
