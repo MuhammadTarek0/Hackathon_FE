@@ -1,22 +1,33 @@
+using UnityEngine;
+using System.Collections;
+using UnityEngine.Networking;
+using System.Text;
 
 public class GameEventListenerSignupData : GameEventListenerT<SignupData>
 {
     [SerializeField]
-    private GameEventSignupData gameEvent;
-
-    [SerializeField]
-    protected UnityEvent onGameEventRaised;
+    private new GameEventSignupData gameEvent;
 
     private string apiUrl = "http://127.0.0.1:8000/";
 
 
     private void OnEnable()
     {
+        if (gameEvent == null)
+        {
+            Debug.LogError("gameEvent is null in OnEnable. Ensure it is assigned properly.");
+            return;
+        }
         gameEvent.RegisterListener(this);
     }
 
     private void OnDisable()
     {
+        if (gameEvent == null)
+        {
+            Debug.LogError("gameEvent is null in OnDisable. Ensure it is assigned properly.");
+            return;
+        }
         gameEvent.UnregisterListener(this);
     }
 
